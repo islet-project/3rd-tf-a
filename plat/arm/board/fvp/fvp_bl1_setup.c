@@ -18,6 +18,14 @@
 #include <plat/common/platform.h>
 #include "fvp_private.h"
 
+static inline void hes_delay_workaround()
+{
+	volatile unsigned int a = 0x15000000ul;
+	while (a != 0) {
+		a--;
+	};
+}
+
 /*******************************************************************************
  * Perform any BL1 specific platform actions.
  ******************************************************************************/
@@ -37,6 +45,13 @@ void bl1_early_platform_setup(void)
 	 * Enable coherency in Interconnect for the primary CPU's cluster.
 	 */
 	fvp_interconnect_enable();
+
+	/**
+	 * XXX Workaround
+	 * We need to wait a while for HES before
+	 * sending any PSA message via UART
+	 */
+	hes_delay_workaround();
 }
 
 void plat_arm_secure_wdt_start(void)
