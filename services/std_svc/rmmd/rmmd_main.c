@@ -74,7 +74,9 @@ uint64_t rmmd_rmm_sync_entry(rmmd_rmm_context_t *rmm_ctx)
 	cm_set_next_eret_context(REALM);
 
 	/* Enter RMM */
+	NOTICE("PRE RMM enter\n");
 	rc = rmmd_rmm_enter(&rmm_ctx->c_rt_ctx);
+	NOTICE("POST RMM enter\n");
 
 	/*
 	 * Save realm context. EL2 Non-secure context will be restored
