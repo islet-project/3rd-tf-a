@@ -17,6 +17,7 @@ extern event_log_metadata_t fvp_event_log_metadata[];
 int plat_mboot_measure_image(unsigned int image_id, image_info_t *image_data)
 {
 	int err;
+	int rc = 0;
 
 	/* Calculate image hash and record data in Event Log */
 	err = event_log_measure_and_record(image_data->image_base,
@@ -26,10 +27,23 @@ int plat_mboot_measure_image(unsigned int image_id, image_info_t *image_data)
 	if (err != 0) {
 		ERROR("%s%s image id %u (%i)\n",
 		      "Failed to ", "record in event log", image_id, err);
-		return err;
+		rc = err;
 	}
 
-	return 0;
+#if PLAT_RSE_COMMS_USE_SERIAL != 0
+	/* Calculate image hash and record data in RSE */
+	err = rse_mboot_measure_and_record(fvp_rse_mboot_metadata,
+	                                   image_data->image_base,
+	                                   image_data->image_size,
+	                                   image_id);
+	if (err != 0) {
+		ERROR("%s%s image id %u (%i)\n",
+		      "Failed to ", "record in RSE", image_id, err);
+		rc = (rc == 0) ? err : -1;
+	}
+#endif
+
+	return rc;
 }
 
 int plat_mboot_measure_key(const void *pk_oid, const void *pk_ptr,
