@@ -192,8 +192,7 @@ TF_CFLAGS_aarch64	+=	-mgeneral-regs-only -mstrict-align
 ###############################################################################
 # General warnings
 WARNINGS		:=	-Wall -Wmissing-include-dirs -Wunused	\
-				-Wdisabled-optimization -Wvla -Wshadow	\
-				-Wredundant-decls
+				-Wdisabled-optimization -Wvla -Wshadow
 # stricter warnings
 WARNINGS		+=	-Wextra -Wno-trigraphs
 # too verbose for generic build
