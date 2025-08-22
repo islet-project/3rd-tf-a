@@ -8,12 +8,15 @@
 #include <errno.h>
 #include <string.h>
 
+#include <delegated_attestation.h>
 #include <plat/common/platform.h>
+#include <psa/error.h>
 
 /*
  * This is the CBOR serialization of the CCA platform token described at
  * https://git.trustedfirmware.org/TF-M/tf-m-tools/+/refs/heads/main/iat-verifier/tests/data/cca_example_platform_token.yaml
  */
+#if PLAT_RSE_COMMS_USE_SERIAL == 0
 static const uint8_t sample_platform_token[] = {
 	0xd2, 0x84, 0x44, 0xa1, 0x01, 0x38, 0x22, 0xa0,
 	0x59, 0x05, 0x81, 0xa9, 0x19, 0x01, 0x09, 0x78,
@@ -207,6 +210,7 @@ static const uint8_t sample_platform_token[] = {
 	0x32, 0x9d, 0xe3, 0x0c, 0x1c, 0xc8
 };
 static uint64_t platform_token_offset;
+#endif
 
 /*
  * Get the hardcoded platform attestation token as FVP does not support
@@ -221,6 +225,14 @@ int plat_rmmd_get_cca_attest_token(uintptr_t buf, size_t *len,
 				   uintptr_t hash, size_t hash_size,
 				   size_t *remaining_len)
 {
+#if PLAT_RSE_COMMS_USE_SERIAL != 0
+	psa_status_t ret;
+
+	ret = rse_delegated_attest_get_token((const uint8_t *)hash, hash_size,
+					     (uint8_t *)buf, *len, len);
+
+	return ret;
+#else
 	(void)hash;
 	(void)hash_size;
 	size_t platform_token_size = sizeof(sample_platform_token);
@@ -256,4 +268,5 @@ int plat_rmmd_get_cca_attest_token(uintptr_t buf, size_t *len,
 	*remaining_len = local_remaining_len;
 
 	return 0;
+#endif
 }
