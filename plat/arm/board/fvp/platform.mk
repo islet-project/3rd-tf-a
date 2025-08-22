@@ -474,6 +474,7 @@ BL1_SOURCES		+=	plat/arm/board/fvp/fvp_common_measured_boot.c	\
 BL2_SOURCES		+=	plat/arm/board/fvp/fvp_common_measured_boot.c	\
 				plat/arm/board/fvp/fvp_bl2_measured_boot.c	\
 				lib/psa/measured_boot.c
+endif
 
 ifneq (${PLAT_RSE_COMMS_USE_SERIAL},0)
 	include drivers/arm/rse/rse_comms.mk
@@ -494,7 +495,6 @@ ifneq (${PLAT_RSE_COMMS_USE_SERIAL},0)
 	BL31_SOURCES += lib/psa/measured_boot.c \
 	                lib/psa/delegated_attestation.c \
 	                ${RSE_COMMS_SOURCES}
-endif
 endif
 
 ifeq (${DRTM_SUPPORT}, 1)
