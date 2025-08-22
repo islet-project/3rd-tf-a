@@ -14,6 +14,9 @@
 static console_t data_channel;
 static bool data_channel_initialized = false;
 
+/* added in aarch64/pl011_console.S */
+int console_pl011_rawputc(int c, console_t *console);
+
 static void serial_lazy_initialize()
 {
 	if (data_channel_initialized)
@@ -56,7 +59,7 @@ enum mhu_error_t mhu_send_data(const uint8_t *send_buffer, size_t size)
 	serial_lazy_initialize();
 
 	for (i = 0; i < size; ++i) {
-		ret = data_channel.putc(send_buffer[i], &data_channel);
+		ret = console_pl011_rawputc(send_buffer[i], &data_channel);
 		if (ret < 0) {
 			NOTICE("[RSE_SERIAL] serial error: %d\n", ret);
 			return MHU_ERR_GENERAL;
