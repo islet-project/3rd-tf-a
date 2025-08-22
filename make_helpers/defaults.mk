@@ -388,7 +388,11 @@ PSA_CRYPTO			:= 0
 # getc() support from the console(s).
 # Disabled by default because it constitutes an attack vector into TF-A. It
 # should only be enabled if there is a use case for it.
-ENABLE_CONSOLE_GETC		:= 0
+ifneq (${PLAT_RSE_COMMS_USE_SERIAL},0)
+	ENABLE_CONSOLE_GETC		:= 1
+else
+	ENABLE_CONSOLE_GETC		:= 0
+endif
 
 # Build option to disable EL2 when it is not used.
 # Most platforms switch from EL3 to NS-EL2 and hence the unused NS-EL2

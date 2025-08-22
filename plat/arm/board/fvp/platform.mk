@@ -476,9 +476,13 @@ BL2_SOURCES		+=	plat/arm/board/fvp/fvp_common_measured_boot.c	\
 				lib/psa/measured_boot.c
 
 ifneq (${PLAT_RSE_COMMS_USE_SERIAL},0)
-    BL1_CFLAGS += -DPLAT_RSE_COMMS_USE_SERIAL=1
-    BL2_CFLAGS += -DPLAT_RSE_COMMS_USE_SERIAL=1
-    BL31_CFLAGS += -DPLAT_RSE_COMMS_USE_SERIAL=1
+	include drivers/arm/rse/rse_comms.mk
+
+	BL31_CFLAGS += -DPLAT_RSE_COMMS_USE_SERIAL=1 \
+	               -DPLAT_RSE_COMMS_PAYLOAD_MAX_SIZE=0x1000 \
+	               -DENABLE_CONSOLE_GETC=1
+	BL31_SOURCES += lib/psa/delegated_attestation.c \
+	                ${RSE_COMMS_SOURCES}
 endif
 endif
 
