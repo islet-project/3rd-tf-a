@@ -104,6 +104,16 @@ ifeq (${MEASURED_BOOT},1)
 
 endif
 
+ifneq (${PLAT_RSE_COMMS_USE_SERIAL},0)
+	include drivers/arm/rse/rse_comms.mk
+
+	BL31_CFLAGS += -DPLAT_RSE_COMMS_USE_SERIAL=1 \
+	               -DPLAT_RSE_COMMS_PAYLOAD_MAX_SIZE=0x1000 \
+	               -DENABLE_CONSOLE_GETC=1
+	BL31_SOURCES += lib/psa/delegated_attestation.c \
+	                ${RSE_COMMS_SOURCES}
+endif
+
 ifneq ($(filter 1,${MEASURED_BOOT} ${TRUSTED_BOARD_BOOT}),)
     CRYPTO_SOURCES	:=	drivers/auth/crypto_mod.c
 
