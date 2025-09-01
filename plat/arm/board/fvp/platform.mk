@@ -462,10 +462,6 @@ endif
 include plat/arm/board/common/board_common.mk
 include plat/arm/common/arm_common.mk
 
-# RSE though can be partially supported on FVP when we use serial port instead
-# of MHU and forward those messages to some external RSE.
-PLAT_RSE_COMMS_USE_SERIAL := 0
-
 ifeq (${MEASURED_BOOT},1)
 BL1_SOURCES		+=	plat/arm/board/fvp/fvp_common_measured_boot.c	\
 				plat/arm/board/fvp/fvp_bl1_measured_boot.c	\

@@ -385,6 +385,10 @@ ENABLE_SPMD_LP			:= 0
 # By default, disable PSA crypto (use MbedTLS legacy crypto API).
 PSA_CRYPTO			:= 0
 
+# RSE can be partially supported on some platforms when we use serial port
+# instead of MHU and forward those messages to some external HES.
+PLAT_RSE_COMMS_USE_SERIAL := 0
+
 # getc() support from the console(s).
 # Disabled by default because it constitutes an attack vector into TF-A. It
 # should only be enabled if there is a use case for it.
