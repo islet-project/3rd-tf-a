@@ -378,6 +378,17 @@ defined(IMAGE_BL2) && MEASURED_BOOT
 #define PLAT_ARM_TRP_UART_BASE		V2M_IOFPGA_UART3_BASE
 #define PLAT_ARM_TRP_UART_CLK_IN_HZ	V2M_IOFPGA_UART3_CLK_IN_HZ
 
+/* UART0 is BOOT and then passed to EFI/OS
+ * UART1 is RUN which is TF-A after passing 0 to EFI
+ * UART2 is TSP whatever that is, it's uninitialized
+ * UART3 is TRP whatever that is, it's taken by TF-RMM
+ *
+ * Conclusion: use UART2
+ */
+#define PLAT_RSE_SERIAL_UART_BASE	V2M_IOFPGA_UART2_BASE
+#define PLAT_RSE_SERIAL_UART_CLK_IN_HZ	V2M_IOFPGA_UART2_CLK_IN_HZ
+#define PLAT_RSE_SERIAL_CONSOLE_BAUDRATE	115200
+
 #define PLAT_FVP_SMMUV3_BASE		UL(0x2b400000)
 #define PLAT_ARM_SMMUV3_ROOT_REG_OFFSET UL(0x20000)
 

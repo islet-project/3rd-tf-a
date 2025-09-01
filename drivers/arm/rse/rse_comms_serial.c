@@ -22,16 +22,9 @@ static void serial_lazy_initialize()
 	if (data_channel_initialized)
 		return;
 
-	/* UART0 is BOOT and then passed to EFI/OS
-	 * UART1 is RUN which is TF-A after passing 0 to EFI
-	 * UART2 is TSP whatever that is, it's uninitialized
-	 * UART3 is TRP whatever that is, it's taken by TF-RMM
-	 *
-	 * Conclusion: use UART2
-	 */
-	int rc = console_pl011_register(V2M_IOFPGA_UART2_BASE,
-	                                V2M_IOFPGA_UART2_CLK_IN_HZ,
-	                                ARM_CONSOLE_BAUDRATE,
+	int rc = console_pl011_register(PLAT_RSE_SERIAL_UART_BASE,
+	                                PLAT_RSE_SERIAL_UART_CLK_IN_HZ,
+	                                PLAT_RSE_SERIAL_CONSOLE_BAUDRATE,
 	                                &data_channel);
 	if (rc != 1)
 		panic();
