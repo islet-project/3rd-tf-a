@@ -99,7 +99,15 @@ enum mhu_error_t mhu_receive_data(uint8_t *receive_buffer, size_t *size)
 			NOTICE("[RSE_SERIAL] buffer overflow");
 			return MHU_ERR_GENERAL;
 		}
-		int retry = 100;
+		/* Might be better to wrap the comms packet with some metadata, e.g.:
+		 * how many bytes are supposed to be transmitted and then wait for that
+		 * specific ammount.
+		 *
+		 * Or utilize sizes that are already in the structure if they are enough
+		 * but that would potentially require major changes in TF-A around the
+		 * data reader code.
+		 */
+		int retry = 2000;
 		do {
 			c = data_channel.getc(&data_channel);
 			//NOTICE("[RSE_SERIAL] retry: %d, read char: %d\n", retry, c);
