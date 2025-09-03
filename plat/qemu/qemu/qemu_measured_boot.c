@@ -84,8 +84,9 @@ void bl2_plat_mboot_finish(void)
 	}
 
 	/* Copy Event Log to Non-secure memory */
-	(void)memcpy((void *)ns_log_addr, (const void *)event_log_base,
-		     event_log_cur_size);
+	// Remove as this overwrites the RMM at 0x40100000
+	//(void)memcpy((void *)ns_log_addr, (const void *)event_log_base,
+	//	     event_log_cur_size);
 
 	/* Ensure that the Event Log is visible in Non-secure memory */
 	flush_dcache_range(ns_log_addr, event_log_cur_size);
