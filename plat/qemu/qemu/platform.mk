@@ -114,6 +114,26 @@ ifneq (${PLAT_RSE_COMMS_USE_SERIAL},0)
 	                ${RSE_COMMS_SOURCES}
 endif
 
+ifeq (${MEASURED_BOOT},1)
+ifneq (${PLAT_RSE_COMMS_USE_SERIAL},0)
+	include drivers/measured_boot/rse/rse_measured_boot.mk
+
+	BL1_CFLAGS += -DPLAT_RSE_COMMS_USE_SERIAL=1 \
+	              -DPLAT_RSE_COMMS_PAYLOAD_MAX_SIZE=0x1000 \
+	              -DENABLE_CONSOLE_GETC=1
+	BL1_SOURCES += lib/psa/measured_boot.c \
+	               ${RSE_COMMS_SOURCES} \
+	               ${MEASURED_BOOT_SOURCES}
+
+	BL2_CFLAGS += -DPLAT_RSE_COMMS_USE_SERIAL=1 \
+	              -DPLAT_RSE_COMMS_PAYLOAD_MAX_SIZE=0x1000 \
+	              -DENABLE_CONSOLE_GETC=1
+	BL2_SOURCES += lib/psa/measured_boot.c \
+	               ${RSE_COMMS_SOURCES} \
+	               ${MEASURED_BOOT_SOURCES}
+endif
+endif
+
 ifneq ($(filter 1,${MEASURED_BOOT} ${TRUSTED_BOARD_BOOT}),)
     CRYPTO_SOURCES	:=	drivers/auth/crypto_mod.c
 
