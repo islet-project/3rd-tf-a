@@ -164,6 +164,8 @@ include lib/gpt_rme/gpt_rme.mk
 
 BL31_SOURCES		+=	${GPT_LIB_SRCS}					\
 				${RMMD_SOURCES}
+
+BL31_SOURCES		+= services/islet_svc/islet_svc_setup.c
 endif
 
 ifeq ($(FEATURE_DETECTION),1)

@@ -51,6 +51,7 @@ int rmmd_attest_get_platform_token(uint64_t buf_pa, uint64_t *buf_size,
 				   uint64_t *remaining_len);
 int rmmd_attest_get_signing_key(uint64_t buf_pa, uint64_t *buf_size,
 				uint64_t ecc_curve);
+int rmmd_islet_get_vhuk(uint64_t buf_pa, uint64_t buf_size, uint64_t key_type);
 
 /* Assembly helpers */
 uint64_t rmmd_rmm_enter(uint64_t *c_rt_ctx);

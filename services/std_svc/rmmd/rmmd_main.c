@@ -30,6 +30,7 @@
 #include <plat/common/platform.h>
 #include <platform_def.h>
 #include <services/rmmd_svc.h>
+#include <services/islet_svc.h>
 #include <smccc_helpers.h>
 #include <lib/extensions/sme.h>
 #include <lib/extensions/sve.h>
@@ -451,6 +452,15 @@ uint64_t rmmd_rmm_el3_handler(uint32_t smc_fid, uint64_t x1, uint64_t x2,
 	uint64_t remaining_len = 0;
 	uint32_t src_sec_state;
 	int ret;
+	union {
+		uint8_t key_buffer[RMM_ISLET_VHUK_SIZE];
+		struct {
+			uint64_t vhuk_0;
+			uint64_t vhuk_1;
+			uint64_t vhuk_2;
+			uint64_t vhuk_3;
+		} s;
+	} buf;
 
 	/* If RMM failed to boot, treat any RMM-EL3 interface SMC as unknown */
 	if (rmm_boot_failed) {
@@ -483,6 +493,10 @@ uint64_t rmmd_rmm_el3_handler(uint32_t smc_fid, uint64_t x1, uint64_t x2,
 	case RMM_BOOT_COMPLETE:
 		VERBOSE("RMMD: running rmmd_rmm_sync_exit\n");
 		rmmd_rmm_sync_exit(x1);
+
+	case RMM_ISLET_GET_VHUK:
+		ret = rmmd_islet_get_vhuk((uint64_t)buf.key_buffer, sizeof(buf.key_buffer), x1);
+		SMC_RET5(handle, ret, buf.s.vhuk_0, buf.s.vhuk_1, buf.s.vhuk_2, buf.s.vhuk_3);
 
 	default:
 		WARN("RMMD: Unsupported RMM-EL3 call 0x%08x\n", smc_fid);

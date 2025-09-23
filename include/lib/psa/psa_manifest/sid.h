@@ -23,4 +23,7 @@
 /******** PSA_SP_DICE_PROTECTION_ENVIRONMENT ********/
 #define RSE_DPE_SERVICE_HANDLE				(0x40000112U)
 
+/******** PSA_SP_VHUK ********/
+#define RSE_VHUK_SERVICE_HANDLE			(0x40000115U)
+
 #endif /* PSA_MANIFEST_SID_H */

@@ -376,6 +376,7 @@ int plat_rmmd_get_cca_attest_token(uintptr_t buf, size_t *len,
 				   uint64_t *remaining_len);
 int plat_rmmd_get_cca_realm_attest_key(uintptr_t buf, size_t *len,
 				       unsigned int type);
+int plat_rmmd_get_vhuk(uintptr_t buf, size_t len, unsigned int key_id);
 size_t plat_rmmd_get_el3_rmm_shared_mem(uintptr_t *shared);
 int plat_rmmd_load_manifest(struct rmm_manifest *manifest);
 #endif

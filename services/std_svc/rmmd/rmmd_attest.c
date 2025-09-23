@@ -14,7 +14,7 @@
 #include "rmmd_private.h"
 #include <services/rmmd_svc.h>
 
-static spinlock_t lock;
+spinlock_t rmmd_lock;
 
 /* For printing Realm attestation token hash */
 #define DIGITS_PER_BYTE				2UL
@@ -104,7 +104,7 @@ int rmmd_attest_get_platform_token(uint64_t buf_pa, uint64_t *buf_size,
 		return E_RMM_INVAL;
 	}
 
-	spin_lock(&lock);
+	spin_lock(&rmmd_lock);
 
 	(void)memcpy(temp_buf, (void *)buf_pa, c_size);
 
@@ -129,7 +129,7 @@ int rmmd_attest_get_platform_token(uint64_t buf_pa, uint64_t *buf_size,
 		err = E_RMM_UNK;
 	}
 
-	spin_unlock(&lock);
+	spin_unlock(&rmmd_lock);
 
 	return err;
 }
@@ -149,7 +149,7 @@ int rmmd_attest_get_signing_key(uint64_t buf_pa, uint64_t *buf_size,
 		return E_RMM_INVAL;
 	}
 
-	spin_lock(&lock);
+	spin_lock(&rmmd_lock);
 
 	/* Get the Realm attestation key. */
 	err = plat_rmmd_get_cca_realm_attest_key((uintptr_t)buf_pa, buf_size,
@@ -159,7 +159,7 @@ int rmmd_attest_get_signing_key(uint64_t buf_pa, uint64_t *buf_size,
 		err =  E_RMM_UNK;
 	}
 
-	spin_unlock(&lock);
+	spin_unlock(&rmmd_lock);
 
 	return err;
 }
