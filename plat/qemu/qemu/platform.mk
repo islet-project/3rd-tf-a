@@ -111,6 +111,7 @@ ifneq (${PLAT_RSE_COMMS_USE_SERIAL},0)
 	               -DPLAT_RSE_COMMS_PAYLOAD_MAX_SIZE=0x1000 \
 	               -DENABLE_CONSOLE_GETC=1
 	BL31_SOURCES += lib/psa/delegated_attestation.c \
+	                lib/psa/vhuk.c \
 	                ${RSE_COMMS_SOURCES}
 endif
 
