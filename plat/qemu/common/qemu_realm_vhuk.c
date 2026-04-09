@@ -8,10 +8,13 @@
 #include <errno.h>
 #include <string.h>
 
-#include <vhuk.h>
 #include <plat/common/platform.h>
-#include <psa/error.h>
 #include <services/islet_svc.h>
+
+#if PLAT_RSE_COMMS_USE_SERIAL != 0
+#include <psa/error.h>
+#include <vhuk.h>
+#endif
 
 #if PLAT_RSE_COMMS_USE_SERIAL == 0
 static uint8_t sample_vhuk_a_key[RMM_ISLET_VHUK_SIZE] = {

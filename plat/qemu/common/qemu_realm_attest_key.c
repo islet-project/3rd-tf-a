@@ -7,9 +7,12 @@
 #include <errno.h>
 #include <string.h>
 
-#include <delegated_attestation.h>
 #include <plat/common/platform.h>
+
+#if PLAT_RSE_COMMS_USE_SERIAL != 0
+#include <delegated_attestation.h>
 #include <psa/error.h>
+#endif
 
 #if PLAT_RSE_COMMS_USE_SERIAL == 0
 static const uint8_t sample_delegated_key[] = {
