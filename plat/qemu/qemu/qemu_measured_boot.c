@@ -16,6 +16,7 @@
 
 #include "../common/qemu_private.h"
 
+#if PLAT_RSE_COMMS_USE_SERIAL == 0
 /* Event Log data */
 static uint8_t event_log[PLAT_EVENT_LOG_MAX_SIZE];
 static uint64_t event_log_base;
@@ -36,7 +37,7 @@ static const event_log_metadata_t qemu_event_log_metadata[] = {
 	{ EVLOG_INVALID_ID, NULL, (unsigned int)(-1) }	/* Terminator */
 };
 
-#if PLAT_RSE_COMMS_USE_SERIAL != 0
+#else
 /*
  * Platform specific table with image IDs and metadata. Intentionally not a
  * const struct, some members might set by bootloaders during trusted boot.
@@ -80,6 +81,7 @@ struct rse_mboot_metadata qemu_rse_mboot_metadata[] = {
 
 void bl2_plat_mboot_init(void)
 {
+#if PLAT_RSE_COMMS_USE_SERIAL == 0
 	/*
 	 * Here we assume that BL1/ROM code doesn't have the driver
 	 * to measure the BL2 code which is a common case for
@@ -95,13 +97,14 @@ void bl2_plat_mboot_init(void)
 
 	event_log_base = (uintptr_t)event_log;
 
-#if PLAT_RSE_COMMS_USE_SERIAL != 0
+#else
 	rse_measured_boot_init(qemu_rse_mboot_metadata);
 #endif
 }
 
 void bl2_plat_mboot_finish(void)
 {
+#if PLAT_RSE_COMMS_USE_SERIAL == 0
 	int rc;
 
 	/* Event Log address in Non-Secure memory */
@@ -150,14 +153,17 @@ void bl2_plat_mboot_finish(void)
 #endif /* defined(SPD_tspd) || defined(SPD_spmd) */
 
 	dump_event_log((uint8_t *)event_log_base, event_log_cur_size);
+#endif
 }
 
 int plat_mboot_measure_image(unsigned int image_id, image_info_t *image_data)
 {
 	int rc = 0;
+	int err = 0;
 
+#if PLAT_RSE_COMMS_USE_SERIAL == 0
 	/* Calculate image hash and record data in Event Log */
-	int err = event_log_measure_and_record(image_data->image_base,
+	err = event_log_measure_and_record(image_data->image_base,
 					       image_data->image_size,
 					       image_id,
 					       qemu_event_log_metadata);
@@ -167,7 +173,7 @@ int plat_mboot_measure_image(unsigned int image_id, image_info_t *image_data)
 		rc = err;
 	}
 
-#if PLAT_RSE_COMMS_USE_SERIAL != 0
+#else
 	/* Calculate image hash and record data in RSE */
 	err = rse_mboot_measure_and_record(qemu_rse_mboot_metadata,
 	                                   image_data->image_base,
@@ -176,7 +182,7 @@ int plat_mboot_measure_image(unsigned int image_id, image_info_t *image_data)
 	if (err != 0) {
 		ERROR("%s%s image id %u (%i)\n",
 		      "Failed to ", "record in RSE", image_id, err);
-		rc = (rc == 0) ? err : -1;
+		rc = err;
 	}
 #endif
 
