@@ -107,7 +107,7 @@ enum mhu_error_t mhu_receive_data(uint8_t *receive_buffer, size_t *size)
 		 * but that would potentially require major changes in TF-A around the
 		 * data reader code.
 		 */
-		int retry = 2000;
+		int retry = 1000000;
 		do {
 			c = data_channel.getc(&data_channel);
 			//NOTICE("[RSE_SERIAL] retry: %d, read char: %d\n", retry, c);

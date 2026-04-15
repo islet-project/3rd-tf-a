@@ -67,15 +67,23 @@ psa_status_t rse_protocol_embed_deserialize_reply(psa_outvec *out_vec,
 	assert(reply != NULL);
 	assert(return_val != NULL);
 
+	// Check if we received at least the header containing the out_size array
+	// Otherwise, the out_size[i] is invalid.
+	if ((sizeof(*reply) - sizeof(reply->trailer)) > reply_size) {
+		return PSA_ERROR_INVALID_ARGUMENT;
+	}
+
 	for (i = 0U; i < out_len; ++i) {
-		if ((sizeof(*reply) - sizeof(reply->trailer) + payload_offset)
-		    > reply_size) {
+		// Check if the received reply size matches information in the rse_embed_reply_t header
+		// and we have enough data received to copy it to the out_vec[i]
+		if ((sizeof(*reply) - sizeof(reply->trailer) + payload_offset + reply->out_size[i]) > reply_size) {
 			return PSA_ERROR_INVALID_ARGUMENT;
 		}
 
 		memcpy(out_vec[i].base,
 		       reply->trailer + payload_offset,
 		       reply->out_size[i]);
+
 		out_vec[i].len = reply->out_size[i];
 		payload_offset += reply->out_size[i];
 	}
